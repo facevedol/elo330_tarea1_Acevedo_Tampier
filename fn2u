@@ -1,0 +1,46 @@
+#!/bin/bash
+
+function cambiar(){
+for file in $1/*;
+#do mv "$file" `echo $file | tr ' ' '_'` ;
+#do mv "$file" `echo $file | tr 'ñ' 'n'`
+do mv "$file" `echo $file | sed 's/ñ/n/g'`; mv "$file" `echo $file | sed 's/Ñ/N/g'`
+
+done
+
+}
+
+function todo(){
+
+cambiar $1
+
+for i in $1/*
+do
+     if test -d $i
+     then
+        todo $i
+     fi
+done
+}
+
+function mostrar(){
+
+for file in $1/'*ñ*'
+do echo $file
+done
+
+#for i in $1/*
+#do
+#    if test -d $i
+#    then
+#	mostrar $i
+#    fi
+#done
+}
+
+if test -z "$2"
+then
+    mostrar $1
+fi
+
+#todo `pwd`
