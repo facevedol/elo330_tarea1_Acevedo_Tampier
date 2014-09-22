@@ -1,46 +1,46 @@
 #!/bin/bash
 
 function cambiar(){
-for file in $1/*;
-#do mv "$file" `echo $file | tr ' ' '_'` ;
-#do mv "$file" `echo $file | tr 'ñ' 'n'`
-do mv "$file" `echo $file | sed 's/ñ/n/g'`; mv "$file" `echo $file | sed 's/Ñ/N/g'`
 
-done
+	for file in $1/*; do
+		mv "$file" `echo $file | sed 's/ñ/n/g;s/Ñ/N/g;s/\s/_/g;s/á/a/g;s/é/e/g;s/í/i/g;s/ó/o/g;s/ú/u/g;s/Á/A/g;s/É/E/g;s/Í/I/g;s/Ó/O/g;s/Ú/U/g'` 
+		#sed 's/Ñ/N/g' file
+		#mv "$file" `echo $file | tr ' ' '_'`
+	done
 
 }
 
 function todo(){
 
-cambiar $1
+	cambiar $1
 
-for i in $1/*
-do
-     if test -d $i
-     then
-        todo $i
-     fi
-done
+	for i in $1/*
+	do
+     		if test -d $i
+    		 then
+        		todo $i
+     		fi
+	done
 }
 
 function mostrar(){
 
-for file in $1/'*ñ*'
-do echo $file
-done
-
-#for i in $1/*
-#do
-#    if test -d $i
-#    then
-#	mostrar $i
-#    fi
-#done
+	find $1 -name "*[áÁéÉíÍóÓúÚñÑ ]*"
 }
 
-if test -z "$2"
+if  [ -z "$2" ] || [ "$2" == 1 ]
 then
     mostrar $1
+fi
+
+if [ -z "$1" ]
+then
+	mostrar `pwd`
+fi
+
+if [ "$2" == 2 ]
+then
+	todo $1
 fi
 
 #todo `pwd`
