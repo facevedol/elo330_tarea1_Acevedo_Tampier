@@ -1,46 +1,87 @@
 #!/bin/bash
+# This script change the name of files and directories with odd characters 
+# that not always are recognized by the operative system.
 
-function cambiar(){
+function change()
+{ # Change the file or directory name, replacing odd characters
 
 	for file in $1/*; do
-		mv "$file" `echo $file | sed 's/ñ/n/g;s/Ñ/N/g;s/\s/_/g;s/á/a/g;s/é/e/g;s/í/i/g;s/ó/o/g;s/ú/u/g;s/Á/A/g;s/É/E/g;s/Í/I/g;s/Ó/O/g;s/Ú/U/g'` 
-		#sed 's/Ñ/N/g' file
-		#mv "$file" `echo $file | tr ' ' '_'`
+		
+		new_file=`echo $file | sed 's/ñ/n/g;s/Ñ/N/g;s/\s/_/g;s/á/a/g;s/é/e/g;s/í/i/g;s/ó/o/g;s/ú/u/g;s/Á/A/g;s/É/E/g;s/Í/I/g;s/Ó/O/g;s/Ú/U/g'` 
+		if [[ $new_file != $file ]]
+		then
+			while [ -e $new_file ] 
+			do	
+				new_file=$new_file'_1'
+			done
+			mv "$file" "$new_file" &> /dev/null
+			echo "$new_file"
+		fi
 	done
 
 }
 
-function todo(){
+function changeAll()
+{ # Loops in the target directory looking for files or subdirectories 
 
-	cambiar $1
+	change $1
 
 	for i in $1/*
 	do
-     		if test -d $i
-    		 then
-        		todo $i
+     		if [ -d $i ]
+    		then
+        		changeAll $i
      		fi
 	done
 }
 
-function mostrar(){
-
+function show()
+{ # Show file and directory names with odd characters in the target path  
+	echo "List of files with odd characters:"
 	find $1 -name "*[áÁéÉíÍóÓúÚñÑ ]*"
 }
 
-if  [ -z "$2" ] || [ "$2" == 1 ]
-then
-    mostrar $1
-fi
+case $# in
+	0) #show current directory
+		show `pwd`
+		;;
+	1) #show target directory
+		if [ -e $1 ]
+		then
+			show `echo $1 | sed "s/\/$//"`
+		else
+			echo "directory doesn't exisit"
+		fi
+		;;
+	2)
+		case $2 in
+			1) # show target directory
+				if [ -e $1 ]
+				then
+					show `echo $1 | sed "s/\/$//"`
+				else
+					echo "directory doesn't exisit"
+				fi
+				;;
+			2) # replace file and directory names
+				if [ -e $1 ]
+				then
+					echo "Changing file names ..."
+					show `echo $1 | sed "s/\/$//"`
+					echo "New file names:"
+					changeAll `echo $1 | sed "s/\/$//"`
+				else
+					echo "directory doesn't exisit"
+				fi
+				;;
+			*) # Error
+				echo "$2 is not a valid parameter for n"
+				;;
+		esac
+		;;
+	*) # Error
+		echo "Too many arguments"
+		;;
+esac
 
-if [ -z "$1" ]
-then
-	mostrar `pwd`
-fi
-
-if [ "$2" == 2 ]
-then
-	todo $1
-fi
-
-#todo `pwd`
+# EOF
