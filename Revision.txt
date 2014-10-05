@@ -1,0 +1,12 @@
+Revisión del ayudante:
+
+Documentación (30%):	100
+Ejecución P1 (35%):		90
+Ejecución P2 (35%):		90
+-----------------------------
+Total:					93
+
+Comentarios: El código se encuentra muy bien comentado, identado y estructurado. Es fácil rastrear lo que hace debido a su diseño.
+La documentación es precisa y detalla de buena forma las principales funciones del programa y es un perfecto complemento al buen diseño del código.
+Sin embargo, el script no funciona cuando se le ingresa como nombre de carpeta una ruta con espacios.
+
